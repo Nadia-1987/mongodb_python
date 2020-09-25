@@ -1,4 +1,4 @@
-# Ejercicios de práctica [Python]
+# Ejercicios de profundización [Python]
 EL propósito de este ejercicio es que el alumno ponga sus habilidades de NoSQL junto con otras adqueridas a lo largo de la carrera como el manejo de request API JSON.
 
 # Enunciado

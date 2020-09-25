@@ -4,7 +4,7 @@ MongoDB [Python]
 Ejemplos de clase
 ---------------------------
 Autor: Inove Coding School
-Version: 1.1
+Version: 1.2
 
 Descripcion:
 Programa creado para mostrar ejemplos prácticos de los visto durante la clase
@@ -12,7 +12,7 @@ Programa creado para mostrar ejemplos prácticos de los visto durante la clase
 
 __author__ = "Inove Coding School"
 __email__ = "alumnos@inove.com.ar"
-__version__ = "1.1"
+__version__ = "1.2"
 
 import json
 
@@ -47,6 +47,7 @@ def insert_persona(name, age, nationality=""):
     persona_json = {"name": name, "age": age, "nationality": nationality}
     db.persons.insert_one(persona_json)
 
+
     # Cerrar la conexión con la base de datos
     conn.close()
 
@@ -73,10 +74,11 @@ def show(fetch_all=True):
         data = list(cursor)
         json_string = json.dumps(data, indent=4)
         print(json_string)
-
-    # Leer todos los documentos y obtener los datos de a uno
-    for doc in cursor:
-        print(doc)
+    else:
+        # Leer todos los documentos y obtener los datos de a uno
+        cursor = db.persons.find()
+        for doc in cursor:
+            print(doc)
 
     # Cerrar la conexión con la base de datos
     conn.close()
@@ -137,7 +139,6 @@ def remove_persona(name):
 
     # Remover todos los documentos que poseen el campo name deseado
     db.persons.remove({"name": name})
-
     # Cerrar la conexión con la base de datos
     conn.close()
 
@@ -160,7 +161,7 @@ if __name__ == '__main__':
     # ------------------------------------------------
     inove_data = find_persona('Inove')
 
-    address = {"address": {"street": "Monroe", "2716": 500}}
+    address = {"address": {"street": "Monroe", "number": 500}}
     update_persona_address('Inove', address)
 
     inove_data = find_persona('Inove')
