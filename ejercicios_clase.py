@@ -33,14 +33,14 @@ def clear():
     conn = TinyMongoClient()
     db = conn[db_name]
 
-    # Eliminar todos los documentos que existan en la coleccion estudiante
-    db.estudiante.remove({})
+    # Eliminar todos los documentos que existan en la coleccion secundaria
+    db.secundaria.remove({})
 
     # Cerrar la conexión con la base de datos
     conn.close()
 
 
-def fill():
+def fill(name, age, grade, tutor):
     print('Completemos esta tablita!')
     # Llenar la coleccion "estudiante" con al menos 5 estudiantes
     # Cada estudiante tiene los posibles campos:
@@ -52,13 +52,37 @@ def fill():
 
     # Se debe utilizar la sentencia insert_one o insert_many.
 
+    conn = TinyMongoClient()
+    db = conn[db_name]
 
-def show():
+    estudiante_json = {"name": name, "age": age, "grade": grade, "tutor" : tutor}
+    db.secundaria.insert_one(estudiante_json)
+
+    conn.close()
+
+def show(fetch_all=True):
     print('Comprovemos su contenido, ¿qué hay en la tabla?')
     # Utilizar la sentencia find para imprimir en pantalla
     # todos los documentos de la DB
     # Queda a su criterio serializar o no el JSON "dumps"
     #  para imprimirlo en un formato más "agradable"
+
+    conn = TinyMongoClient()
+    db = conn[db_name]
+
+    
+    if fetch_all is True:
+        cursor = db.secundaria.find()
+        data = list(cursor)
+        json_string = json.dumps(data, indent=4)
+        print(json_string)
+
+  
+    for doc in cursor:
+        print(doc)
+
+    
+    conn.close()
 
 
 def find_by_grade(grade):
@@ -70,6 +94,16 @@ def find_by_grade(grade):
     # en pantalla unicamente los siguiente campos por cada uno:
     # id / name / age
 
+    conn = TinyMongoClient()
+    db = conn[db_name]
+
+    
+    estudiante_data = db.secundaria.find_one({"grade": grade})
+
+   
+    conn.close()
+    return estudiante_data
+    
 
 def insert(student):
     print('Nuevos ingresos!')
@@ -78,11 +112,30 @@ def insert(student):
 
     # El parámetro student deberá ser un JSON el cual se inserta en la db
 
+    conn = TinyMongoClient()
+    db = conn[db_name]
+
+    estudiante_json = (student)
+    db.secundaria.insert_one(estudiante_json)
+
+    conn.close()
+
+
+
 
 def count(grade):
     print('Contar estudiantes')
     # Utilizar la sentencia find + count para contar
     # cuantos estudiantes pertenecen el grado "grade"
+
+    conn = TinyMongoClient()
+    db = conn[db_name]
+
+    count = db.secundaria.find({"grade": grade}).count()
+
+    # Cerrar la conexión con la base de datos
+    conn.close()
+    return count
 
 
 if __name__ == '__main__':
@@ -90,13 +143,17 @@ if __name__ == '__main__':
     # Borrar la db
     clear()
 
-    # fill()
-    # show()
+    fill('Angel', 60, 6, 'Angel')
+    fill('Silvia', 56, 5, 'Noemi')
+    fill('Marcos', 26, 4, 'Daniel')
+    fill('Anabela', 37, 3, 'Noemi')
+    fill('Juan', 34, 2, 'Pablo')
+    show()
 
     grade = 3
-    # find_by_grade(grade)
+    find_by_grade(grade)
 
-    # student = {....}
-    # insert(student)
+    student = {'name':'Alma', 'age' : 11, 'grade' : 1, 'tutor':'Nadia'}
+    insert(student)
 
-    # count(grade)
+    count(grade)
